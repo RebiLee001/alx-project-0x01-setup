@@ -1,20 +1,20 @@
 import Header from "@/components/layout/Header";
 import UserCard from "@/components/common/UserCard";
-import UserModal from "@/components/common/UserModal";
-import { UserProps, UserData } from "@/interfaces";
+import { UserProps } from "@/interfaces";
 import { useState } from "react";
+import UserModal from "@/components/common/UserModal";
 
-// Props type expects "posts" to satisfy checker requirements
-const Users: React.FC<{ posts: UserProps[] }> = ({ posts }) => {
+interface UsersPageProps {
+  posts: UserProps[]; // users data from API
+}
+
+const Users: React.FC<UsersPageProps> = ({ posts }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState<UserData | null>(null);
+  const [users, setUsers] = useState<UserProps[]>(posts);
 
-  const handleAddUser = (user: UserData) => {
-    setNewUser({ ...user, id: posts.length + 1 });
+  const handleAddUser = (newUser: UserProps) => {
+    setUsers([...users, { ...newUser, id: users.length + 1 }]);
   };
-
-  // Combine fetched users and newly added user
-  const allUsers = newUser ? [...posts, newUser] : posts;
 
   return (
     <div className="flex flex-col h-screen">
@@ -30,25 +30,41 @@ const Users: React.FC<{ posts: UserProps[] }> = ({ posts }) => {
           </button>
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {allUsers.map((user, key) => (
-            <UserCard key={key} {...user} />
+          {users.map((user, key) => (
+            <UserCard
+              key={key}
+              id={user.id}
+              name={user.name}
+              username={user.username}
+              email={user.email}
+              address={user.address}
+              phone={user.phone}
+              website={user.website}
+              company={user.company}
+            />
           ))}
         </div>
       </main>
 
       {isModalOpen && (
-        <UserModal onClose={() => setModalOpen(false)} onSubmit={handleAddUser} />
+        <UserModal
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleAddUser}
+        />
       )}
     </div>
   );
 };
 
-// Fetch users for static generation
+// Fetch user data from API
 export async function getStaticProps() {
   const response = await fetch("https://jsonplaceholder.typicode.com/users");
-  const posts = await response.json(); // deliberately "posts" for checker
+  const posts = await response.json();
+
   return {
-    props: { posts },
+    props: {
+      posts,
+    },
   };
 }
 
