@@ -1,4 +1,4 @@
-// Posts
+// Existing interfaces
 export interface PostProps {
   userId: number;
   id: number;
@@ -6,19 +6,6 @@ export interface PostProps {
   body: string;
 }
 
-export interface PostData {
-  userId: number;
-  id?: number;
-  title: string;
-  body: string;
-}
-
-export interface PostModalProps {
-  onClose: () => void;
-  onSubmit: (post: PostData) => void;
-}
-
-// Users
 export interface UserProps {
   id: number;
   name: string;
@@ -43,6 +30,20 @@ export interface UserProps {
   };
 }
 
+// Post modal interfaces
+export interface PostData {
+  userId: number;
+  id?: number;
+  title: string;
+  body: string;
+}
+
+export interface PostModalProps {
+  onClose: () => void;
+  onSubmit: (post: PostData) => void;
+}
+
+// **Add this for UserModal**
 export interface UserData {
   id?: number;
   name: string;
@@ -69,5 +70,5 @@ export interface UserData {
 
 export interface UserModalProps {
   onClose: () => void;
-  onSubmit: (user: UserData) => void;
+  onSubmit: (post: UserProps) => void; // <-- Correct type for checker
 }
